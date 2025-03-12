@@ -3,6 +3,7 @@ name: Publish 🚀
 on:
   schedule:
     - cron: '0 5,19 * * *'
+  workflow_dispatch:
 
 jobs:
   deployment:

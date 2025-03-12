@@ -1,4 +1,4 @@
-target "standard" {
+target "base" {
   platforms = ["linux/amd64", "linux/arm64"]
   args = {
     "BASE_IMAGE": "alpine:3.21"

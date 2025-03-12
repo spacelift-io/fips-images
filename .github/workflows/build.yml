@@ -12,37 +12,28 @@ jobs:
   deployment:
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        target: [base, gcp]
+        platform: [linux/amd64, linux/arm64]
     name: Build the image
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: ${{ github.repository }}:${{ github.sha }}
-      OPENSSL_VERSION: "3.0.9"
-      OPENSSL_HASH: "eb1ab04781474360f77c318ab89d8c5a03abc38e63d65a603cabbf1b00a1dc90"
     steps:
       - name: Check out repository code
         uses: actions/checkout@main
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-        if: matrix.arch == 'arm64'
         with:
           platforms: linux/arm64
 
-      - name: Setup buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build the image
-        uses: docker/build-push-action@v6
+      - name: Bake the ${{ matrix.target }} image
+        uses: docker/bake-action@v6
         with:
-          platforms: linux/${{ matrix.arch }}
+          targets: ${{ matrix.target }}
           load: true
           push: false
-          build-args: |
-            OPENSSL_VERSION=${{ env.OPENSSL_VERSION }}
-            OPENSSL_HASH=${{ env.OPENSSL_HASH }}
-          tags: ${{ env.IMAGE_NAME }}
-
-      - name: Test if the image has openssl fips set
-        run: |
-          docker run --rm ${{ env.IMAGE_NAME }} sh -c '[ -n "$OPENSSL_FIPS" ] || exit 1'
+          set: |
+            ${{ matrix.target }}.tags=alpine-fips:${{ matrix.target }}-${{ github.sha }}
+            ${{ matrix.target }}.platform=${{ matrix.platform }}

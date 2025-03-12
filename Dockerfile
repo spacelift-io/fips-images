@@ -6,8 +6,8 @@ ARG TARGETARCH
 
 # OpenSSL Configuration
 # 3.0.9 is the latest fips validated version (scroll down): https://openssl-library.org/source/
-ARG OPENSSL_VERSION
-ARG OPENSSL_HASH
+ARG OPENSSL_VERSION="3.0.9"
+ARG OPENSSL_HASH="eb1ab04781474360f77c318ab89d8c5a03abc38e63d65a603cabbf1b00a1dc90"
 ENV OPENSSL_FIPS=1
 
 # This FIPS installation follows the instructions from the official OpenSSL FIPS User Guide

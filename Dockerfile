@@ -15,8 +15,8 @@ RUN echo "Enabling FIPS" &&  \
       # Install required packages
       apk add --no-cache --virtual .build-deps ca-certificates wget make gcc libgcc musl-dev linux-headers perl vim && \
       # Temporary build directory
-      mkdir -p /ossl && \
-      cd /ossl && \
+      mkdir -p /tmp && \
+      cd /tmp && \
       # Download and verify the FIPS module
       wget --quiet https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz && \
       echo "$OPENSSL_HASH openssl-$OPENSSL_VERSION.tar.gz" | sha256sum -c - | grep OK && \

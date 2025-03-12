@@ -31,7 +31,6 @@ jobs:
         uses: docker/bake-action@v6
         with:
           targets: ${{ matrix.target }}
-          load: true
           push: false
           set: |
             ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:build-test

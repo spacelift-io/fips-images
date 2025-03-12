@@ -88,5 +88,7 @@ jobs:
 
             To use it in your Dockerfile, add the following lines:
             ```dockerfile
-            FROM ${{ env.IMAGE_NAME }}
+            FROM ghcr.io/spacelift-io/alpine-fips:base-latest
+            
+            FROM ghcr.io/spacelift-io/alpine-fips:gcp-latest
             ```

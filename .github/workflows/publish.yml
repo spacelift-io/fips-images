@@ -81,7 +81,7 @@ jobs:
         run: |
           git config --local user.email "cicd@spacelift.io"
           git config --local user.name "Spacelift CI/CD"
-          git tag -a ${{ env.OPENSSL_VERSION }} -m "AWS CLI v${{ env.OPENSSL_VERSION }}"
+          git tag -a ${{ env.OPENSSL_VERSION }} -m "OpenSSL v${{ env.OPENSSL_VERSION }}"
           git push origin ${{ env.OPENSSL_VERSION }}
 
       - name: Create release

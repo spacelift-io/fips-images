@@ -17,7 +17,7 @@ jobs:
       contents: write
       packages: write
     env:
-      OPENSSL_VERSION: "3.0.9"
+      OPENSSL_VERSION: "3.1.2"
     steps:
       - name: Check out repository code
         uses: actions/checkout@main
@@ -56,18 +56,8 @@ jobs:
             ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:${{ matrix.target }}-${{ github.sha }}
             ${{ matrix.target }}.platform=${{ matrix.platform }}
 
-      - name: Check if tag exists already
-        id: check_tag
-        run: |
-          if git rev-parse ${{ env.OPENSSL_VERSION }} >/dev/null 2>&1
-          then
-            echo "tag_exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "tag_exists=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Push tag
-        if: steps.check_tag.outputs.tag_exists == 'false'
+        continue-on-error: true # The tag may exist already
         run: |
           git config --local user.email "cicd@spacelift.io"
           git config --local user.name "Spacelift CI/CD"
@@ -75,14 +65,13 @@ jobs:
           git push origin ${{ env.OPENSSL_VERSION }}
 
       - name: Create release
-        if: steps.check_tag.outputs.tag_exists == 'false'
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ env.OPENSSL_VERSION }}
           tag: ${{ env.OPENSSL_VERSION }}
           makeLatest: true
-          skipIfReleaseExists: true
+          skipIfReleaseExists: true # Skip if the release already exists
           body: |
             Release of OpenSSL FIPS ${{ env.OPENSSL_VERSION }}.
 

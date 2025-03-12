@@ -5,9 +5,9 @@ FROM ${BASE_IMAGE} AS base
 ARG TARGETARCH
 
 # OpenSSL Configuration
-# 3.0.9 is the latest fips validated version (scroll down): https://openssl-library.org/source/
-ARG OPENSSL_VERSION="3.0.9"
-ARG OPENSSL_HASH="eb1ab04781474360f77c318ab89d8c5a03abc38e63d65a603cabbf1b00a1dc90"
+# 3.1.2 is the latest fips validated version (scroll down): https://openssl-library.org/source/
+ARG OPENSSL_VERSION="3.1.2"
+ARG OPENSSL_HASH="a0ce69b8b97ea6a35b96875235aa453b966ba3cba8af2de23657d8b6767d6539"
 ENV OPENSSL_FIPS=1
 
 # This FIPS installation follows the instructions from the official OpenSSL FIPS User Guide

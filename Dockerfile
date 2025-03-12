@@ -2,8 +2,6 @@ ARG BASE_IMAGE=alpine:3.21
 
 FROM ${BASE_IMAGE} AS base
 
-ARG TARGETARCH
-
 # OpenSSL Configuration
 # 3.1.2 is the latest fips validated version (scroll down): https://openssl-library.org/source/
 ARG OPENSSL_VERSION="3.1.2"
@@ -29,8 +27,6 @@ RUN echo "Enabling FIPS" &&  \
       make && \
       # Install fips enabled openssl
       make install_fips && \
-      # Update to relink binaries
-      apk upgrade --no-cache -U && \
       # Cleanup
       rm -rf /tmp && \
       apk del .build-deps

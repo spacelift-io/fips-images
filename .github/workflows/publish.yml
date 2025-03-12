@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         target: [base, gcp]
-        platform: [linux/amd64, linux/arm64]
     name: Publish the image
     runs-on: ubuntu-latest
     permissions:
@@ -54,7 +53,6 @@ jobs:
           set: |
             ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:${{ matrix.target }}-latest
             ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:${{ matrix.target }}-${{ github.sha }}
-            ${{ matrix.target }}.platform=${{ matrix.platform }}
 
       - name: Push tag
         continue-on-error: true # The tag may exist already

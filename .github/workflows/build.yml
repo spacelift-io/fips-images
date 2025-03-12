@@ -13,7 +13,6 @@ jobs:
     strategy:
       matrix:
         target: [base, gcp]
-        platform: [linux/amd64, linux/arm64]
     name: Build the image
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +35,6 @@ jobs:
           push: false
           set: |
             ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:build-test
-            ${{ matrix.target }}.platform=${{ matrix.platform }}
 
       - name: Test if the image has openssl fips set
         run: |

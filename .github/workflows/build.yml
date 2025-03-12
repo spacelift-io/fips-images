@@ -35,5 +35,9 @@ jobs:
           load: true
           push: false
           set: |
-            ${{ matrix.target }}.tags=alpine-fips:${{ matrix.target }}-${{ github.sha }}
+            ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:build-test
             ${{ matrix.target }}.platform=${{ matrix.platform }}
+
+      - name: Test if the image has openssl fips set
+        run: |
+          docker run --rm ghcr.io/spacelift-io/alpine-fips:build-test sh -c '[ -n "$OPENSSL_FIPS" ] || exit 1'

@@ -2,7 +2,7 @@ name: Publish 🚀
 
 on:
   schedule:
-    - cron: '0 5,19 * * *'
+    - cron: '0 5 * * *'
   workflow_dispatch:
 
 jobs:
@@ -52,8 +52,8 @@ jobs:
           load: true
           push: true
           set: |
-            ${{ matrix.target }}.tags=alpine-fips:${{ matrix.target }}-latest
-            ${{ matrix.target }}.tags=alpine-fips:${{ matrix.target }}-${{ github.sha }}
+            ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:${{ matrix.target }}-latest
+            ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:${{ matrix.target }}-${{ github.sha }}
             ${{ matrix.target }}.platform=${{ matrix.platform }}
 
       - name: Check if tag exists already

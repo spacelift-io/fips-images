@@ -33,6 +33,6 @@ RUN echo "Enabling FIPS" &&  \
       apk upgrade --no-cache -U && \
       # Cleanup
       rm -rf /tmp && \
-      apk del .build-deps \
+      apk del .build-deps
 
 COPY openssl.cnf /etc/ssl/openssl.cnf

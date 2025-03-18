@@ -9,7 +9,7 @@ jobs:
   deployment:
     strategy:
       matrix:
-        target: [base, gcp]
+        target: [alpine-base, alpine-gcp, alpine-python, debian-base]
     name: Publish the image
     runs-on: ubuntu-latest
     permissions:
@@ -38,11 +38,12 @@ jobs:
       - name: Setup buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}
+      - name: set build outputs
+        run: |
+          IFS='-' read -r os tag <<< "${{ matrix.target }}"
+          echo "Building $os with tag $tag"
+          echo "BASE_NAME=$os" >> $GITHUB_ENV
+          echo "BASE_TAG=$tag" >> $GITHUB_ENV
 
       - name: Bake the ${{ matrix.target }} image
         uses: docker/bake-action@v6
@@ -50,8 +51,8 @@ jobs:
           targets: ${{ matrix.target }}
           push: true
           set: |
-            ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:${{ matrix.target }}-latest
-            ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:${{ matrix.target }}-${{ github.sha }}
+            ${{ matrix.target }}.tags=ghcr.io/spacelift-io/${{ env.BASE_NAME }}-fips:${{ env.BASE_TAG }}-latest
+            ${{ matrix.target }}.tags=ghcr.io/spacelift-io/${{ env.BASE_NAME }}-fips:${{ env.BASE_TAG }}-${{ github.sha }}
 
       - name: Push tag
         continue-on-error: true # The tag may exist already
@@ -74,7 +75,8 @@ jobs:
 
             To use it in your Dockerfile, add the following lines:
             ```dockerfile
-            FROM ghcr.io/spacelift-io/alpine-fips:base-latest
-            
             FROM ghcr.io/spacelift-io/alpine-fips:gcp-latest
+            FROM ghcr.io/spacelift-io/alpine-fips:python-latest
+            FROM ghcr.io/spacelift-io/alpine-fips:base-latest
+            FROM ghcr.io/spacelift-io/debian-fips:base-latest
             ```

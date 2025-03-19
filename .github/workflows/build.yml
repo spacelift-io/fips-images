@@ -12,7 +12,8 @@ jobs:
   deployment:
     strategy:
       matrix:
-        target: [base, gcp]
+        target: [alpine-base, alpine-gcp, alpine-python, debian-base]
+        platform: [linux/amd64, linux/arm64]
     name: Build the image
     runs-on: ubuntu-latest
     steps:
@@ -27,14 +28,23 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: set build outputs
+        run: |
+          IFS='-' read -r os tag <<< "${{ matrix.target }}"
+          echo "Building $os with tag $tag"
+          echo "BASE_NAME=$os" >> $GITHUB_ENV
+          echo "BASE_TAG=$tag" >> $GITHUB_ENV
+
       - name: Bake the ${{ matrix.target }} image
         uses: docker/bake-action@v6
         with:
           targets: ${{ matrix.target }}
           push: false
+          load: true
           set: |
-            ${{ matrix.target }}.tags=ghcr.io/spacelift-io/alpine-fips:build-test
+            ${{ matrix.target }}.tags=${{ env.BASE_NAME }}-fips:${{ env.BASE_TAG }}-build-test
+            ${{ matrix.target }}.platform=${{ matrix.platform }}
 
       - name: Test if the image has openssl fips set
         run: |
-          docker run --rm ghcr.io/spacelift-io/alpine-fips:build-test sh -c '[ -n "$OPENSSL_FIPS" ] || exit 1'
+          docker run --rm --platform ${{ matrix.platform }} ${{ env.BASE_NAME }}-fips:${{ env.BASE_TAG }}-build-test sh -c '[ -n "$OPENSSL_FIPS" ] || exit 1'

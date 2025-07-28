@@ -28,7 +28,7 @@ RUN echo "Enabling FIPS" &&  \
       # Install fips enabled openssl
       make install_fips && \
       # Cleanup
-      rm -rf /tmp && \
+      rm -rf /tmp/* && \
       apk del .build-deps
 
 COPY openssl.cnf /etc/ssl/openssl.cnf

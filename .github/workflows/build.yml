@@ -21,12 +21,12 @@ jobs:
         uses: actions/checkout@main
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
         with:
           platforms: linux/arm64
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: set build outputs
         run: |
@@ -36,7 +36,7 @@ jobs:
           echo "BASE_TAG=$tag" >> $GITHUB_ENV
 
       - name: Bake the ${{ matrix.target }} image
-        uses: docker/bake-action@v6
+        uses: docker/bake-action@v7
         with:
           targets: ${{ matrix.target }}
           push: false

@@ -22,7 +22,10 @@ RUN echo "Enabling FIPS" &&  \
       tar -xzf openssl-$OPENSSL_VERSION.tar.gz && \
       # Build the fips modules \
       cd openssl-$OPENSSL_VERSION && \
-      ./Configure enable-fips --libdir=lib --prefix=/usr shared zlib && \
+      # Install fips.so into the Debian libcrypto modules directory (/usr/lib/<multiarch>/ossl-modules)
+      MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH) && \
+      [ -n "$MULTIARCH" ] && \
+      ./Configure enable-fips --libdir=lib/$MULTIARCH --prefix=/usr shared zlib && \
       make && \
       # Install fips enabled openssl
       make install_fips && \
@@ -33,3 +36,8 @@ RUN echo "Enabling FIPS" &&  \
       apt-get clean
 
 COPY openssl.cnf /etc/ssl/openssl.cnf
+
+# Fail the build if OpenSSL does not load the FIPS provider or still allows MD5
+RUN openssl list -providers | grep -q "OpenSSL FIPS Provider" && \
+      echo | openssl sha256 > /dev/null && \
+      ! openssl dgst -md5 < /dev/null > /dev/null 2>&1

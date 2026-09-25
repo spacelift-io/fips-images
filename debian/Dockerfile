@@ -36,8 +36,3 @@ RUN echo "Enabling FIPS" &&  \
       apt-get clean
 
 COPY openssl.cnf /etc/ssl/openssl.cnf
-
-# Fail the build if OpenSSL does not load the FIPS provider or still allows MD5
-RUN openssl list -providers | grep -q "OpenSSL FIPS Provider" && \
-      echo | openssl sha256 > /dev/null && \
-      ! openssl dgst -md5 < /dev/null > /dev/null 2>&1

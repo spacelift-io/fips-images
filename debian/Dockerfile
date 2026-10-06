@@ -22,7 +22,10 @@ RUN echo "Enabling FIPS" &&  \
       tar -xzf openssl-$OPENSSL_VERSION.tar.gz && \
       # Build the fips modules \
       cd openssl-$OPENSSL_VERSION && \
-      ./Configure enable-fips --libdir=lib --prefix=/usr shared zlib && \
+      # Install fips.so into the Debian libcrypto modules directory (/usr/lib/<multiarch>/ossl-modules)
+      MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH) && \
+      [ -n "$MULTIARCH" ] && \
+      ./Configure enable-fips --libdir=lib/$MULTIARCH --prefix=/usr shared zlib && \
       make && \
       # Install fips enabled openssl
       make install_fips && \

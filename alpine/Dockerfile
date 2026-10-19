@@ -7,6 +7,8 @@ FROM ${BASE_IMAGE} AS base
 ARG OPENSSL_VERSION="3.1.2"
 ARG OPENSSL_HASH="a0ce69b8b97ea6a35b96875235aa453b966ba3cba8af2de23657d8b6767d6539"
 ENV OPENSSL_FIPS=1
+# Statically linked OpenSSL copies, such as the one in gcloud's bundled Python, look for providers under their own build path.
+ENV OPENSSL_MODULES=/usr/lib/ossl-modules
 
 # This FIPS installation follows the instructions from the official OpenSSL FIPS User Guide
 # https://openssl-library.org/source/fips-doc/openssl-3.0.9-security-policy-2024-01-12.pdf

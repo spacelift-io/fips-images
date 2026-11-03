@@ -1,7 +1,7 @@
 target "alpine-base" {
   platforms = ["linux/amd64", "linux/arm64"]
   args = {
-    "BASE_IMAGE": "alpine:3.22"
+    "BASE_IMAGE": "alpine:3.24"
   }
   dockerfile = "alpine/Dockerfile"
   context = "./"
